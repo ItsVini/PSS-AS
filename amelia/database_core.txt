@@ -1,0 +1,106 @@
+DROP DATABASE mes_test;
+
+CREATE DATABASE mes_test;
+USE mes_test;
+
+CREATE TABLE machines (
+    MachineID INT PRIMARY KEY,
+    Location VARCHAR(255),
+    MachineName VARCHAR(255),
+    Manufacturer VARCHAR(255),
+    PurchaseDate DATE
+);
+
+CREATE TABLE products (
+    ProductID INT PRIMARY KEY,
+    ProductName VARCHAR(255),
+    Description VARCHAR(255)
+);
+
+CREATE TABLE operators (
+    OperatorID INT PRIMARY KEY,
+    Department VARCHAR(255),
+    HireDate DATE,
+    OperatorName VARCHAR(255)
+);
+
+CREATE TABLE productionorders (
+    OrderID INT PRIMARY KEY,
+    OrderNumber VARCHAR(255),
+    OrderDate DATE,
+    DueDate DATE,
+    ProductID INT,
+    Quantity INT,
+    UnitPrice DECIMAL(10, 2),
+    FOREIGN KEY (ProductID) REFERENCES products(ProductID)
+);
+
+CREATE TABLE operations (
+    OperationID INT PRIMARY KEY,
+    MachineID INT,
+    OperatorID INT,
+    OrderID INT,
+    StartTime DATETIME,
+    EndTime DATETIME,
+    Status VARCHAR(255),
+    FOREIGN KEY (MachineID) REFERENCES machines(MachineID),
+    FOREIGN KEY (OperatorID) REFERENCES operators(OperatorID),
+    FOREIGN KEY (OrderID) REFERENCES productionorders(OrderID)
+);
+
+CREATE TABLE roles (
+    role_id INT PRIMARY KEY,
+    role_name VARCHAR(255)
+);
+
+CREATE TABLE users (
+    user_id INT PRIMARY KEY,
+    username VARCHAR(255) UNIQUE,
+    password VARCHAR(255),
+    emailAddress VARCHAR(255),
+    role_id INT,
+    FOREIGN KEY (role_id) REFERENCES roles(role_id)
+);
+
+
+-- Tabela machines
+INSERT INTO machines (MachineID, Location, MachineName, Manufacturer, PurchaseDate) VALUES
+(1, 'New York', 'CNC Machine', 'Makino', '2020-01-15'),
+(2, 'Los Angeles', 'Lathe Machine', 'Mazak', '2019-05-23'),
+(3, 'Chicago', 'Milling Machine', 'Haas', '2021-03-10');
+
+-- Tabela operators
+INSERT INTO operators (OperatorID, Department, HireDate, OperatorName) VALUES
+(1, 'Assembly', '2015-08-12', 'John Doe'),
+(2, 'Manufacturing', '2018-02-05', 'Jane Smith'),
+(3, 'Quality Control', '2020-06-17', 'Emily Davis');
+
+-- Tabela products
+INSERT INTO products (ProductID, ProductName, Description) VALUES
+(1, 'Widget A', 'High quality widget'),
+(2, 'Widget B', 'Standard quality widget'),
+(3, 'Widget C', 'Budget quality widget');
+
+-- Tabela productionorders
+INSERT INTO productionorders (OrderID, OrderNumber, OrderDate, DueDate, ProductID, Quantity, UnitPrice) VALUES
+(1, 'PO12345', '2022-01-10', '2022-01-20', 1, 100, 5.99),
+(2, 'PO12346', '2022-02-15', '2022-02-25', 2, 200, 4.99),
+(3, 'PO12347', '2022-03-20', '2022-03-30', 3, 300, 3.99);
+
+-- Tabela operations
+INSERT INTO operations (OperationID, MachineID, OperatorID, OrderID, StartTime, EndTime, Status) VALUES
+(1, 1, 1, 1, '2022-01-10 08:00:00', '2022-01-10 16:00:00', 'Completed'),
+(2, 2, 2, 2, '2022-02-15 08:00:00', '2022-02-15 16:00:00', 'Completed'),
+(3, 3, 3, 3, '2022-03-20 08:00:00', '2022-03-20 16:00:00', 'In Progress');
+
+-- Tabela roles
+INSERT INTO roles (role_id, role_name) VALUES
+(1, 'Admin'),
+(2, 'User'),
+(3, 'Guest');
+
+-- Tabela users
+INSERT INTO users (user_id, username, password, emailAddress, role_id) VALUES
+(1, 'admin', 'password123', 'admin@example.com', 1),
+(2, 'jdoe', 'password123', 'jdoe@example.com', 2),
+(3, 'guest', 'password123', 'guest@example.com', 3);
